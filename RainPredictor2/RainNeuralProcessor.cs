@@ -22,6 +22,15 @@ namespace RainPredictorNeuralNetwork
     {
         BasicNetwork _network;
 
+        NormalizedField NormPreviousMinTemp;
+        NormalizedField NormPreviousMaxTemp;
+        NormalizedField NormPreviousAvgTemp;
+        NormalizedField NormPreviousMorningHumidity;
+        NormalizedField NormPreviousMorningPressure;
+        NormalizedField NormPreviousMorningPressureDifference;
+        NormalizedField NormMorningTemp;
+        NormalizedField NormMorningPressure;
+
         public RainNeuralProcessor()
         {
 
@@ -34,23 +43,23 @@ namespace RainPredictorNeuralNetwork
 
         }
 
-        public void CreateNetwork(int[] HiddenLayers)
+        public void CreateNetwork(int[] layers)
         {
             _network = new BasicNetwork();
-            _network.AddLayer(new BasicLayer(new ActivationSigmoid(), true, 8));
+            //_network.AddLayer(new BasicLayer(new ActivationSigmoid(), true, 8));
 
-            foreach(int layer in HiddenLayers)
+            foreach(int layer in layers)
             {
                 _network.AddLayer(new BasicLayer(new ActivationSigmoid(), false, layer));
             }
             
-            _network.AddLayer(new BasicLayer(new ActivationSigmoid(), false, 1));
+            //_network.AddLayer(new BasicLayer(new ActivationSigmoid(), false, 1));
 
             _network.Structure.FinalizeStructure();
             _network.Reset();
         }
 
-        public void SaveNetwork()
+        public void SaveNetwork(string filePath)
         {
             var serializer = new BinaryFormatter();
             using (var ms = new MemoryStream())
@@ -58,7 +67,8 @@ namespace RainPredictorNeuralNetwork
                 serializer.Serialize(ms, _network);
                 ms.Position = 0;
                 byte[] serialized = ms.ToArray();
-                File.WriteAllBytes(@"network.nueral", serialized);
+
+                File.WriteAllBytes(filePath, serialized);
             }
         }
 
@@ -125,7 +135,7 @@ namespace RainPredictorNeuralNetwork
             return output[0] > 0.5;
         }
 
-        public void TrainFromFile(string FileLocation)
+        public void TrainFromFile(string FileLocation, int MaxIterations, double MaxError)
         {
             List<WeatherDataEntry> processedData;
             if (System.IO.File.Exists("./data.json"))
@@ -144,12 +154,14 @@ namespace RainPredictorNeuralNetwork
                 Console.WriteLine("Normalizing data");
                 NormalizeData(processedData);
 
-                System.IO.File.WriteAllText("./data.json", Newtonsoft.Json.JsonConvert.SerializeObject(processedData));
+                //System.IO.File.WriteAllText("./data.json", Newtonsoft.Json.JsonConvert.SerializeObject(processedData));
             }
 
 
             Console.WriteLine("Creating training set");
             INeuralDataSet trainingSet = CreateTrainingSet(processedData.Where(r => r.EntryDate < new DateTime(2017, 1, 1)).ToList());
+
+            this.TrainNetwork(trainingSet, MaxIterations, MaxError);
         }
 
 
@@ -233,27 +245,30 @@ namespace RainPredictorNeuralNetwork
 
         private void NormalizeData(List<WeatherDataEntry> data)
         {
-            var PreviousMinTempNorm = new NormalizedField(NormalizationAction.Normalize, "PreviousMinTemp", data.Max(r => r.PreviousMinTemp), data.Min(r => r.PreviousMinTemp), 1.0, -1.0);
-            var PreviousMaxTempNorm = new NormalizedField(NormalizationAction.Normalize, "PreviousMaxTemp", data.Max(r => r.PreviousMaxTemp), data.Min(r => r.PreviousMaxTemp), 1.0, -1.0);
-            var PreviousAvgTempNorm = new NormalizedField(NormalizationAction.Normalize, "PreviousAvgTemp", data.Max(r => r.PreviousAvgTemp), data.Min(r => r.PreviousAvgTemp), 1.0, -1.0);
+            if (NormPreviousMinTemp == null)
+            {
+                NormPreviousMinTemp = new NormalizedField(NormalizationAction.Normalize, "PreviousMinTemp", data.Max(r => r.PreviousMinTemp), data.Min(r => r.PreviousMinTemp), 1.0, -1.0);
+                NormPreviousMaxTemp = new NormalizedField(NormalizationAction.Normalize, "PreviousMaxTemp", data.Max(r => r.PreviousMaxTemp), data.Min(r => r.PreviousMaxTemp), 1.0, -1.0);
+                NormPreviousAvgTemp = new NormalizedField(NormalizationAction.Normalize, "PreviousAvgTemp", data.Max(r => r.PreviousAvgTemp), data.Min(r => r.PreviousAvgTemp), 1.0, -1.0);
 
 
-            var PreviousMorningHumidityNorm = new NormalizedField(NormalizationAction.Normalize, "PreviousMorningHumidity", data.Max(r => r.PreviousMorningHumidity), data.Min(r => r.PreviousMorningHumidity), 1.0, -1.0);
-            var PreviousMorningPressureNorm = new NormalizedField(NormalizationAction.Normalize, "PreviousMorningPressure", data.Max(r => r.PreviousMorningPressure), data.Min(r => r.PreviousMorningPressure), 1.0, -1.0);
-            var PreviousMorningPressureDifferenceNorm = new NormalizedField(NormalizationAction.Normalize, "PreviousMorningPressureDifference", data.Max(r => r.PreviousMorningPressureDifference), data.Min(r => r.PreviousMorningPressureDifference), 1.0, -1.0);
-            var MorningTempNorm = new NormalizedField(NormalizationAction.Normalize, "MorningTemp", data.Max(r => r.MorningTemp), data.Min(r => r.MorningTemp), 1.0, -1.0);
-            var MorningPressureNorm = new NormalizedField(NormalizationAction.Normalize, "MorningPressure", data.Max(r => r.MorningPressure), data.Min(r => r.MorningPressure), 1.0, -1.0);
+                NormPreviousMorningHumidity = new NormalizedField(NormalizationAction.Normalize, "PreviousMorningHumidity", data.Max(r => r.PreviousMorningHumidity), data.Min(r => r.PreviousMorningHumidity), 1.0, -1.0);
+                NormPreviousMorningPressure = new NormalizedField(NormalizationAction.Normalize, "PreviousMorningPressure", data.Max(r => r.PreviousMorningPressure), data.Min(r => r.PreviousMorningPressure), 1.0, -1.0);
+                NormPreviousMorningPressureDifference = new NormalizedField(NormalizationAction.Normalize, "PreviousMorningPressureDifference", data.Max(r => r.PreviousMorningPressureDifference), data.Min(r => r.PreviousMorningPressureDifference), 1.0, -1.0);
+                NormMorningTemp = new NormalizedField(NormalizationAction.Normalize, "MorningTemp", data.Max(r => r.MorningTemp), data.Min(r => r.MorningTemp), 1.0, -1.0);
+                NormMorningPressure = new NormalizedField(NormalizationAction.Normalize, "MorningPressure", data.Max(r => r.MorningPressure), data.Min(r => r.MorningPressure), 1.0, -1.0);
+            }
 
             foreach (WeatherDataEntry entry in data)
             {
-                entry.NormPreviousMinTemp = PreviousMinTempNorm.Normalize(entry.PreviousMinTemp);
-                entry.NormPreviousMaxTemp = PreviousMaxTempNorm.Normalize(entry.PreviousMaxTemp);
-                entry.NormPreviousAvgTemp = PreviousAvgTempNorm.Normalize(entry.PreviousAvgTemp);
-                entry.NormPreviousMorningHumidity = PreviousMorningHumidityNorm.Normalize(entry.PreviousMorningHumidity);
-                entry.NormPreviousMorningPressure = PreviousMorningPressureNorm.Normalize(entry.PreviousMorningPressure);
-                entry.NormPreviousMorningPressureDifference = PreviousMorningPressureDifferenceNorm.Normalize(entry.PreviousMorningPressureDifference);
-                entry.NormMorningTemp = MorningTempNorm.Normalize(entry.MorningTemp);
-                entry.NormMorningPressure = MorningPressureNorm.Normalize(entry.MorningPressure);
+                entry.NormPreviousMinTemp = NormPreviousMinTemp.Normalize(entry.PreviousMinTemp);
+                entry.NormPreviousMaxTemp = NormPreviousMaxTemp.Normalize(entry.PreviousMaxTemp);
+                entry.NormPreviousAvgTemp = NormPreviousAvgTemp.Normalize(entry.PreviousAvgTemp);
+                entry.NormPreviousMorningHumidity = NormPreviousMorningHumidity.Normalize(entry.PreviousMorningHumidity);
+                entry.NormPreviousMorningPressure = NormPreviousMorningPressure.Normalize(entry.PreviousMorningPressure);
+                entry.NormPreviousMorningPressureDifference = NormPreviousMorningPressureDifference.Normalize(entry.PreviousMorningPressureDifference);
+                entry.NormMorningTemp = NormMorningTemp.Normalize(entry.MorningTemp);
+                entry.NormMorningPressure = NormMorningPressure.Normalize(entry.MorningPressure);
             }
         }
 

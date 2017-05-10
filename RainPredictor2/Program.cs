@@ -30,7 +30,9 @@ namespace RainPredictorNeuralNetwork
             else
             {
 
-                Console.WriteLine("Importing raw data");
+
+
+                /*Console.WriteLine("Importing raw data");
                 DownloadResult[] data = GetWeatherData();
 
                 Console.WriteLine("Processing raw data");
@@ -38,12 +40,12 @@ namespace RainPredictorNeuralNetwork
 
                 Console.WriteLine("Normalizing data");
                 NormalizeData(processedData);
-
-                System.IO.File.WriteAllText("./data.json", Newtonsoft.Json.JsonConvert.SerializeObject(processedData));
+                */
+                //System.IO.File.WriteAllText("./data.json", Newtonsoft.Json.JsonConvert.SerializeObject(processedData));
             }
 
 
-            Console.WriteLine("Creating training set");            
+            /*Console.WriteLine("Creating training set");            
             INeuralDataSet trainingSet = CreateTrainingSet(processedData.Where(r => r.EntryDate < new DateTime(2017, 1, 1)).ToList());
 
             RainNeuralProcessor processor = new RainNeuralProcessor();
@@ -77,7 +79,7 @@ namespace RainPredictorNeuralNetwork
 
             
             Console.WriteLine("Press Any Key to Continue");
-            Console.ReadKey();
+            Console.ReadKey();*/
         }
 
 

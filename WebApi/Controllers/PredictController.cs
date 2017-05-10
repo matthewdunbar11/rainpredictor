@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Web;
 using System.Web.Http;
 
 namespace WebApi.Controllers
@@ -32,9 +33,8 @@ namespace WebApi.Controllers
                 PreviousMinTemp = previousMinTemp
             };
 
-            RainPredictorNeuralNetwork.RainNeuralProcessor processor = new RainPredictorNeuralNetwork.RainNeuralProcessor();
-
-
+            RainPredictorNeuralNetwork.RainNeuralProcessor processor = new RainPredictorNeuralNetwork.RainNeuralProcessor(HttpContext.Current.Server.MapPath("network.neu"));
+        
             return true;
         }
 
@@ -44,10 +44,12 @@ namespace WebApi.Controllers
         {
 
 
-            RainPredictorNeuralNetwork.RainNeuralProcessor processor = new RainPredictorNeuralNetwork.RainNeuralProcessor(@"network.nueral");
+            //RainPredictorNeuralNetwork.RainNeuralProcessor processor = new RainPredictorNeuralNetwork.RainNeuralProcessor(@"network.nueral");
+            RainPredictorNeuralNetwork.RainNeuralProcessor processor = new RainPredictorNeuralNetwork.RainNeuralProcessor();
 
-            processor.TrainFromFile(@"C:\Users\Matthew\Downloads\960971.csv");
-
+            processor.CreateNetwork(new int[] { 8, 13, 1 });
+            processor.TrainFromFile(@"C:\Users\Matthew\Downloads\960971.csv", 5000, 0.10);
+            processor.SaveNetwork(HttpContext.Current.Server.MapPath("network.neu"));
             return "trained";
         }
     }

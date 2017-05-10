@@ -1,0 +1,9 @@
+﻿@model WebApi.Models.WeatherEntryViewModel
+
+@using (Html.BeginForm())
+{
+    @Html.LabelFor(m => m.MorningPressure);
+    @Html.TextBoxFor(m => m.MorningPressure);
+    
+    <input type="submit" value="Predict" />
+}

@@ -34,8 +34,8 @@ namespace WebApi.Controllers
             };
 
             RainPredictorNeuralNetwork.RainNeuralProcessor processor = new RainPredictorNeuralNetwork.RainNeuralProcessor(HttpContext.Current.Server.MapPath("network.neu"));
-        
-            return true;
+
+            return processor.WillItRain(entry);
         }
 
         [Route("train")]

@@ -21,16 +21,7 @@ namespace RainPredictorNeuralNetwork
     public class RainNeuralProcessor
     {
         BasicNetwork _network;
-
-        NormalizedField NormPreviousMinTemp;
-        NormalizedField NormPreviousMaxTemp;
-        NormalizedField NormPreviousAvgTemp;
-        NormalizedField NormPreviousMorningHumidity;
-        NormalizedField NormPreviousMorningPressure;
-        NormalizedField NormPreviousMorningPressureDifference;
-        NormalizedField NormMorningTemp;
-        NormalizedField NormMorningPressure;
-
+        
         public RainNeuralProcessor()
         {
 
@@ -152,8 +143,7 @@ namespace RainPredictorNeuralNetwork
                 processedData = ProcessData(data);
 
                 Console.WriteLine("Normalizing data");
-                NormalizeData(processedData);
-
+                
                 //System.IO.File.WriteAllText("./data.json", Newtonsoft.Json.JsonConvert.SerializeObject(processedData));
             }
 
@@ -242,37 +232,7 @@ namespace RainPredictorNeuralNetwork
 
             return results;
         }
-
-        private void NormalizeData(List<WeatherDataEntry> data)
-        {
-            if (NormPreviousMinTemp == null)
-            {
-                NormPreviousMinTemp = new NormalizedField(NormalizationAction.Normalize, "PreviousMinTemp", data.Max(r => r.PreviousMinTemp), data.Min(r => r.PreviousMinTemp), 1.0, -1.0);
-                NormPreviousMaxTemp = new NormalizedField(NormalizationAction.Normalize, "PreviousMaxTemp", data.Max(r => r.PreviousMaxTemp), data.Min(r => r.PreviousMaxTemp), 1.0, -1.0);
-                NormPreviousAvgTemp = new NormalizedField(NormalizationAction.Normalize, "PreviousAvgTemp", data.Max(r => r.PreviousAvgTemp), data.Min(r => r.PreviousAvgTemp), 1.0, -1.0);
-
-
-                NormPreviousMorningHumidity = new NormalizedField(NormalizationAction.Normalize, "PreviousMorningHumidity", data.Max(r => r.PreviousMorningHumidity), data.Min(r => r.PreviousMorningHumidity), 1.0, -1.0);
-                NormPreviousMorningPressure = new NormalizedField(NormalizationAction.Normalize, "PreviousMorningPressure", data.Max(r => r.PreviousMorningPressure), data.Min(r => r.PreviousMorningPressure), 1.0, -1.0);
-                NormPreviousMorningPressureDifference = new NormalizedField(NormalizationAction.Normalize, "PreviousMorningPressureDifference", data.Max(r => r.PreviousMorningPressureDifference), data.Min(r => r.PreviousMorningPressureDifference), 1.0, -1.0);
-                NormMorningTemp = new NormalizedField(NormalizationAction.Normalize, "MorningTemp", data.Max(r => r.MorningTemp), data.Min(r => r.MorningTemp), 1.0, -1.0);
-                NormMorningPressure = new NormalizedField(NormalizationAction.Normalize, "MorningPressure", data.Max(r => r.MorningPressure), data.Min(r => r.MorningPressure), 1.0, -1.0);
-            }
-
-            foreach (WeatherDataEntry entry in data)
-            {
-                entry.NormPreviousMinTemp = NormPreviousMinTemp.Normalize(entry.PreviousMinTemp);
-                entry.NormPreviousMaxTemp = NormPreviousMaxTemp.Normalize(entry.PreviousMaxTemp);
-                entry.NormPreviousAvgTemp = NormPreviousAvgTemp.Normalize(entry.PreviousAvgTemp);
-                entry.NormPreviousMorningHumidity = NormPreviousMorningHumidity.Normalize(entry.PreviousMorningHumidity);
-                entry.NormPreviousMorningPressure = NormPreviousMorningPressure.Normalize(entry.PreviousMorningPressure);
-                entry.NormPreviousMorningPressureDifference = NormPreviousMorningPressureDifference.Normalize(entry.PreviousMorningPressureDifference);
-                entry.NormMorningTemp = NormMorningTemp.Normalize(entry.MorningTemp);
-                entry.NormMorningPressure = NormMorningPressure.Normalize(entry.MorningPressure);
-            }
-        }
-
-
+        
         private INeuralDataSet CreateTrainingSet(List<WeatherDataEntry> processedData)
         {
             double[][] WEATHER_INPUT = new double[processedData.Count][];

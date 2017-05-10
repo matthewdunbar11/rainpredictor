@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RainPredictorNeuralNetwork", "RainPredictor2\RainPredictorNeuralNetwork.csproj", "{B6F5F34E-5197-42BE-B7C7-37C46A19A384}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataImport", "DataImport\DataImport.csproj", "{03589F2C-56BF-432A-8D2F-E58B129213D2}"
+EndProject
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "DataRequest", "DataRequest\DataRequest.njsproj", "{5D379DB9-AA9A-4E22-973D-115D83AFF627}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApi", "WebApi\WebApi.csproj", "{77ECF849-F7CF-47B4-BE81-FAD89243C33B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B6F5F34E-5197-42BE-B7C7-37C46A19A384}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6F5F34E-5197-42BE-B7C7-37C46A19A384}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6F5F34E-5197-42BE-B7C7-37C46A19A384}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6F5F34E-5197-42BE-B7C7-37C46A19A384}.Release|Any CPU.Build.0 = Release|Any CPU
+		{03589F2C-56BF-432A-8D2F-E58B129213D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03589F2C-56BF-432A-8D2F-E58B129213D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03589F2C-56BF-432A-8D2F-E58B129213D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03589F2C-56BF-432A-8D2F-E58B129213D2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5D379DB9-AA9A-4E22-973D-115D83AFF627}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D379DB9-AA9A-4E22-973D-115D83AFF627}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5D379DB9-AA9A-4E22-973D-115D83AFF627}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5D379DB9-AA9A-4E22-973D-115D83AFF627}.Release|Any CPU.Build.0 = Release|Any CPU
+		{77ECF849-F7CF-47B4-BE81-FAD89243C33B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{77ECF849-F7CF-47B4-BE81-FAD89243C33B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{77ECF849-F7CF-47B4-BE81-FAD89243C33B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{77ECF849-F7CF-47B4-BE81-FAD89243C33B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
